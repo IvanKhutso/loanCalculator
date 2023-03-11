@@ -17,7 +17,11 @@ const loanSchema = new Schema({
   },
   interestAmount: {
     type: Number,
-    required: true,
+    default: 0,
+  },
+  outStandingAmount: {
+    type: Number,
+    default: 0
   },
   totalAmount: {
     type: Number,
@@ -34,6 +38,21 @@ const loanSchema = new Schema({
   },
 });
 
+
+loanSchema.methods.updatePayments = function(paymentAmount) {
+  this.payments.push({ amount: paymentAmount, date: new Date() });
+  this.totalAmount -= paymentAmount;
+  if (this.totalAmount < 0) {
+    this.outStandingAmount = Math.abs(this.totalAmount);
+    this.totalAmount = 0;
+  }
+}
+
+
 const Loan = mongoose.model('Loan', loanSchema);
 
 module.exports = { Loan };
+
+
+
+

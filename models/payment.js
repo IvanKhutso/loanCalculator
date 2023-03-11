@@ -29,27 +29,8 @@ const paymentSchema = new Schema({
   },
 });
 
+
+
 const Payment = mongoose.model('Payment', paymentSchema);
-
-// paymentSchema.statics.getOutstandingBalance = async function () {
-//   const payments = await this.find();
-//   let principalPaid = 0;
-//   for (const payment of payments) {
-//     principalPaid += payment.principal;
-//   }
-//   return this.totalLoanAmount() - principalPaid;
-// };
-
-// paymentSchema.statics.totalLoanAmount = async function () {
-//   const loans = await Loan.find();
-//   let total = 0;
-//   for (const loan of loans) {
-//     total += loan.amount;
-//   }
-//   return total;
-// };
-
-// module.exports = mongoose.model('Payment', paymentSchema);
-
 
 module.exports = { Payment };

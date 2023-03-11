@@ -2,6 +2,38 @@
 const { Loan } = require('../models/loan');
 const { User } = require('../models/user');
 
+// Calculate loan details
+Loan.calculateLoanDetails = async (req, res) => {
+  try {
+    // Check if the loan ID is present in the request body
+    if (!req.body.loanId) throw "Loan ID is required"
+
+    // Find the loan with the given loan ID
+    const loan = await Loan.findOne({ _id: req.body.loanId })
+
+    // If the loan is found, calculate the loan details
+    if (loan) {
+      const loanAmount = loan.loanAmount;
+      const interestRate = loan.interestRate;
+      const duration = loan.duration;
+      
+      const r = (interestRate / 12) / 100; // Monthly interest rate
+      const n = duration * 12; // Number of payments
+
+      // Calculate Equated Monthly Instalment (EMI)
+      const EMI = loanAmount * r * ((1 + r) ** n) / (((1 + r) ** n) - 1);
+
+      // Send a response with the loan details
+      res.status(200).json({ loanAmount: loanAmount, interestRate: interestRate, duration: duration, EMI: EMI });
+    }
+  }
+  // Catch any errors and send an error response
+  catch (err) {
+    console.log(err)
+    return res.status(500).send({ message: "Error: " + err });
+  }
+}
+
 // Create a new loan for a user
 Loan.createLoan = async (req, res) => {
   try {
